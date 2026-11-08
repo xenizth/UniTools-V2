@@ -1,0 +1,71 @@
+name: Android Build
+
+# Builds the UniTools debug APK so every push/PR is verified to actually compile.
+# The repo doesn't currently commit a Gradle wrapper (gradlew / gradlew.bat /
+# gradle-wrapper.jar — gradle-wrapper/ only has gradle-wrapper.properties), so this
+# workflow provisions the exact Gradle version that file already pins (9.3.1) via
+# gradle/actions/setup-gradle instead of relying on ./gradlew. If a wrapper is added
+# later, swap the "Build debug APK" step below to call ./gradlew instead of gradle.
+
+# Release builds are intentionally out of scope here: app/build.gradle.kts signs
+# "release" with a keystore from $KEYSTORE_PATH / $STORE_PASSWORD / $KEY_PASSWORD, none
+# of which exist in CI. A throwaway debug keystore matching the "debugConfig"
+# signingConfig (androiddebugkey / "android" / "android") is generated below purely so
+# assembleDebug has something to sign with.
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android SDK licenses
+        run: yes | sdkmanager --licenses
+
+      - name: Install Android SDK platform and build-tools
+        run: |
+          sdkmanager "platform-tools" \
+            "platforms;android-36" \
+            "build-tools;36.0.0"
+
+      - name: Set up Gradle 9.3.1
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: "9.3.1"
+
+      - name: Generate debug signing keystore
+        run: |
+          keytool -genkeypair -v \
+            -keystore debug.keystore \
+            -storepass android -keypass android \
+            -alias androiddebugkey \
+            -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US"
+
+      - name: Build debug APK
+        run: gradle :app:assembleDebug --no-daemon --stacktrace
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: unitools-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          if-no-files-found: error
