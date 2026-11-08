@@ -3,6 +3,7 @@ package com.example.ui.components
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,11 @@ data class NavigationItem(
     val onClick: () -> Unit
 )
 
+/**
+ * UniTools bottom dock — a bordered panel (matching [com.example.ui.components.Android15CardGroup])
+ * holding pill-shaped destination chips. Distinct from a stock Material NavigationBar so the whole
+ * app reads as one deliberate "diagnostics console" system rather than default Compose chrome.
+ */
 @Composable
 fun KernelSuNavigationBar(
     items: List<NavigationItem>,
@@ -49,8 +55,9 @@ fun KernelSuNavigationBar(
             modifier = Modifier
                 .widthIn(max = 480.dp)
                 .wrapContentWidth(),
-            shape = RoundedCornerShape(32.dp),
-            color = Color.Transparent,
+            shape = RoundedCornerShape(28.dp),
+            color = MaterialTheme.colorScheme.surfaceContainer,
+            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
             tonalElevation = 0.dp
         ) {
             Row(
@@ -67,21 +74,21 @@ fun KernelSuNavigationBar(
                     )
 
                     val containerColor by animateColorAsState(
-                        targetValue = if (item.selected) MaterialTheme.colorScheme.primaryContainer else Color.Transparent,
+                        targetValue = if (item.selected) MaterialTheme.colorScheme.primary else Color.Transparent,
                         label = "nav_container_color"
                     )
 
                     val contentColor by animateColorAsState(
-                        targetValue = if (item.selected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
+                        targetValue = if (item.selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
                         label = "nav_content_color"
                     )
 
                     Surface(
-                        shape = RoundedCornerShape(22.dp),
+                        shape = RoundedCornerShape(20.dp),
                         color = containerColor,
                         modifier = Modifier
                             .graphicsLayer(scaleX = scale, scaleY = scale)
-                            .clip(RoundedCornerShape(22.dp))
+                            .clip(RoundedCornerShape(20.dp))
                             .clickable { item.onClick() }
                     ) {
                         Row(
@@ -99,7 +106,8 @@ fun KernelSuNavigationBar(
                                 Text(
                                     text = item.title,
                                     color = contentColor,
-                                    style = MaterialTheme.typography.labelMedium
+                                    style = MaterialTheme.typography.labelMedium,
+                                    fontWeight = androidx.compose.ui.text.font.FontWeight.Bold
                                 )
                             }
                         }

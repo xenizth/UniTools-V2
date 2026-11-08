@@ -4,6 +4,12 @@
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!-- Required for config.txt / Internal.zip toolchain download (BinaryFileManager,
+         UniToolsViewModel.loadConfiguration). Without this the app silently fails to ever
+         fetch its own flashing binaries or remote config — every network call is wrapped in a
+         try/catch that swallows the resulting SecurityException/UnknownHostException. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
         android:allowBackup="true"
@@ -25,6 +31,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- Required by FilesScreen.fileSharing(): FileProvider.getUriForFile() throws
+             IllegalArgumentException without this declaration, so "Export" on any file always
+             silently fell back to a text-only share instead of actually sharing the file. -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="${applicationId}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
     </application>
 
 </manifest>

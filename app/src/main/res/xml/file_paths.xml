@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Exposes context.filesDir (where BinaryFileManager keeps binaries/, backup/, input/ and
+    backup_spl/) through the app's FileProvider, so FilesScreen's "Export"/share action can
+    actually hand a real content:// Uri to other apps instead of always hitting its
+    catch-and-fall-back-to-text-only path.
+-->
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <files-path name="app_files" path="." />
+</paths>

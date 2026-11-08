@@ -1,12 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+    <!-- Chip / SoC hexagon outline -->
     <path
-        android:strokeColor="#9DF2E8"
-        android:strokeWidth="14"
+        android:strokeColor="#2EE6D6"
+        android:strokeWidth="6"
         android:strokeLineCap="round"
         android:strokeLineJoin="round"
-        android:pathData="M26,64 L54,36 L82,64" />
+        android:fillColor="#00000000"
+        android:pathData="M54,21 L82.58,37.5 L82.58,70.5 L54,87 L25.42,70.5 L25.42,37.5 Z" />
+    <!-- Flash / unlock bolt -->
+    <path
+        android:fillColor="#2EE6D6"
+        android:pathData="M46.5,39 L46.5,55.5 L51,55.5 L51,69 L61.5,51 L55.5,51 L61.5,39 Z" />
 </vector>

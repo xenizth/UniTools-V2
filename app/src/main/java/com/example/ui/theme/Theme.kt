@@ -11,36 +11,88 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = TealPrimaryDark,
-    onPrimary = TealOnPrimaryDark,
-    primaryContainer = TealPrimaryContainerDark,
-    onPrimaryContainer = TealOnPrimaryContainerDark,
-    secondary = TealSecondaryDark,
-    onSecondary = TealOnPrimaryDark,
-    secondaryContainer = TealSecondaryContainerDark,
-    tertiary = TealTertiaryDark,
-    background = TealBackgroundDark,
-    surface = TealSurfaceDark,
-    surfaceVariant = TealSurfaceVariantDark
+    primary = FlashPrimaryDark,
+    onPrimary = FlashOnPrimaryDark,
+    primaryContainer = FlashPrimaryContainerDark,
+    onPrimaryContainer = FlashOnPrimaryContainerDark,
+    secondary = FlashSecondaryDark,
+    onSecondary = FlashOnSecondaryDark,
+    secondaryContainer = FlashSecondaryContainerDark,
+    onSecondaryContainer = FlashOnSecondaryContainerDark,
+    tertiary = FlashTertiaryDark,
+    onTertiary = FlashOnTertiaryDark,
+    tertiaryContainer = FlashTertiaryContainerDark,
+    onTertiaryContainer = FlashOnTertiaryContainerDark,
+    error = FlashErrorDark,
+    onError = FlashOnErrorDark,
+    errorContainer = FlashErrorContainerDark,
+    onErrorContainer = FlashOnErrorContainerDark,
+    background = FlashBackgroundDark,
+    onBackground = FlashOnBackgroundDark,
+    surface = FlashSurfaceDark,
+    onSurface = FlashOnSurfaceDark,
+    surfaceVariant = FlashSurfaceVariantDark,
+    onSurfaceVariant = FlashOnSurfaceVariantDark,
+    outline = FlashOutlineDark,
+    outlineVariant = FlashOutlineVariantDark,
+    inverseSurface = FlashInverseSurfaceDark,
+    inverseOnSurface = FlashInverseOnSurfaceDark,
+    inversePrimary = FlashInversePrimaryDark,
+    surfaceDim = FlashSurfaceDimDark,
+    surfaceBright = FlashSurfaceBrightDark,
+    surfaceContainerLowest = FlashSurfaceContainerLowestDark,
+    surfaceContainerLow = FlashSurfaceContainerLowDark,
+    surfaceContainer = FlashSurfaceContainerDark,
+    surfaceContainerHigh = FlashSurfaceContainerHighDark,
+    surfaceContainerHighest = FlashSurfaceContainerHighestDark
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = TealPrimaryLight,
-    onPrimary = TealOnPrimaryLight,
-    primaryContainer = TealPrimaryContainerLight,
-    onPrimaryContainer = TealOnPrimaryContainerLight,
-    secondary = TealSecondaryLight,
-    secondaryContainer = TealSecondaryContainerLight,
-    tertiary = TealTertiaryLight,
-    background = TealBackgroundLight,
-    surface = TealSurfaceLight,
-    surfaceVariant = TealSurfaceVariantLight
+    primary = FlashPrimaryLight,
+    onPrimary = FlashOnPrimaryLight,
+    primaryContainer = FlashPrimaryContainerLight,
+    onPrimaryContainer = FlashOnPrimaryContainerLight,
+    secondary = FlashSecondaryLight,
+    onSecondary = FlashOnSecondaryLight,
+    secondaryContainer = FlashSecondaryContainerLight,
+    onSecondaryContainer = FlashOnSecondaryContainerLight,
+    tertiary = FlashTertiaryLight,
+    onTertiary = FlashOnTertiaryLight,
+    tertiaryContainer = FlashTertiaryContainerLight,
+    onTertiaryContainer = FlashOnTertiaryContainerLight,
+    error = FlashErrorLight,
+    onError = FlashOnErrorLight,
+    errorContainer = FlashErrorContainerLight,
+    onErrorContainer = FlashOnErrorContainerLight,
+    background = FlashBackgroundLight,
+    onBackground = FlashOnBackgroundLight,
+    surface = FlashSurfaceLight,
+    onSurface = FlashOnSurfaceLight,
+    surfaceVariant = FlashSurfaceVariantLight,
+    onSurfaceVariant = FlashOnSurfaceVariantLight,
+    outline = FlashOutlineLight,
+    outlineVariant = FlashOutlineVariantLight,
+    inverseSurface = FlashInverseSurfaceLight,
+    inverseOnSurface = FlashInverseOnSurfaceLight,
+    inversePrimary = FlashInversePrimaryLight,
+    surfaceDim = FlashSurfaceDimLight,
+    surfaceBright = FlashSurfaceBrightLight,
+    surfaceContainerLowest = FlashSurfaceContainerLowestLight,
+    surfaceContainerLow = FlashSurfaceContainerLowLight,
+    surfaceContainer = FlashSurfaceContainerLight,
+    surfaceContainerHigh = FlashSurfaceContainerHighLight,
+    surfaceContainerHighest = FlashSurfaceContainerHighestLight
 )
 
+/**
+ * UniTools uses a deliberate brand identity (signal-cyan on circuit-navy, matching the launcher
+ * icon) rather than per-device Material You wallpaper theming, so [dynamicColor] defaults to
+ * false. Pass true explicitly if wallpaper-matched colors are ever wanted instead.
+ */
 @Composable
 fun MyApplicationTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    dynamicColor: Boolean = true,
+    dynamicColor: Boolean = false,
     content: @Composable () -> Unit
 ) {
     val colorScheme = when {
