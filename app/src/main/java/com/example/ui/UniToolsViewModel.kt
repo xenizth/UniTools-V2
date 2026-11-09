@@ -147,6 +147,10 @@ class UniToolsViewModel(application: Application) : AndroidViewModel(application
         usbDetector.checkConnectedDevices()
     }
 
+    fun requestUsbPermission() {
+        usbDetector.requestPermission()
+    }
+
     fun setTab(index: Int) {
         _uiState.update { it.copy(activeTab = index) }
     }

@@ -247,7 +247,8 @@ fun MainContentColumn(
         // USB Auto-Detect status pill
         UsbStatusPill(
             usbStatus = uiState.usbStatus,
-            onRefresh = { viewModel.refreshUsb() }
+            onRefresh = { viewModel.refreshUsb() },
+            onRequestPermission = { viewModel.requestUsbPermission() }
         )
 
         // Target SoC and Device configuration header card (collapses when scrolling down)

@@ -15,14 +15,17 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cable
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Usb
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,12 +36,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.manager.UsbStatus
+import com.example.ui.theme.StatusAmber
 import com.example.ui.theme.StatusGreen
 
 @Composable
 fun UsbStatusPill(
     usbStatus: UsbStatus,
     onRefresh: () -> Unit,
+    onRequestPermission: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     Card(
@@ -118,6 +123,47 @@ fun UsbStatusPill(
                     .clickable { onRefresh() },
                 tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
+        }
+
+        // Android holds USB access per-device via a system permission dialog, separate from
+        // whether a device is merely plugged in. Surface that explicitly instead of only ever
+        // showing "connected" and leaving the user to guess why an operation still won't run.
+        if (usbStatus.isConnected && !usbStatus.hasPermission) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 12.dp)
+                    .padding(bottom = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = null,
+                        modifier = Modifier.size(14.dp),
+                        tint = StatusAmber
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "USB access not granted",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = StatusAmber
+                    )
+                }
+
+                if (usbStatus.permissionRequestInFlight) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(16.dp),
+                        strokeWidth = 2.dp,
+                        color = StatusAmber
+                    )
+                } else {
+                    TextButton(onClick = onRequestPermission) {
+                        Text("Grant Access", style = MaterialTheme.typography.labelSmall)
+                    }
+                }
+            }
         }
     }
 }
