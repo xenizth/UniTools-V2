@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "818436975542",
+    "project_id": "xenizth",
+    "storage_bucket": "xenizth.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:818436975542:android:27e12de65fe7247e7aaf17",
+        "android_client_info": {
+          "package_name": "com.unisoc.spdflasher"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3qvKVH0gam20ou5EyWcRxbb5GZQIUjlA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
