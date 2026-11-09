@@ -101,11 +101,18 @@ class UniToolsRepository(
         // Step 2: Generate spl-unlock
         onStepUpdate("Generating unlock token from splloader...")
         val splFile = File(backupSplDir, "splloader.bin")
-        if (splFile.exists()) {
-            splFile.copyTo(File(binaryManager.binariesDir, "splloader.bin"), overwrite = true)
+        if (!splFile.exists()) {
+            // Step 1 was reported successful but never actually produced a splloader dump (e.g.
+            // the device dropped off USB mid-read). Generating a token from whatever stale
+            // splloader.bin might already be sitting in binariesDir from a previous run would
+            // silently create a token for the WRONG device. Stop here instead.
+            onStepUpdate("Unlock aborted: no splloader backup was produced in step 1.")
+            return ExecutionResult(exitCode = -1, isSuccess = false, durationMs = 0)
         }
+        splFile.copyTo(File(binaryManager.binariesDir, "splloader.bin"), overwrite = true)
         val genCmd = "./gen_spl-unlock splloader.bin"
         val res2 = rootExecutor.executeCommand(genCmd, binaryManager.binariesDir)
+        if (!res2.isSuccess) return res2
 
         // Step 3: Write modified uboot
         onStepUpdate("Flashing modified uboot loader...")
@@ -117,11 +124,22 @@ class UniToolsRepository(
         onStepUpdate("Sending bootloader unlocker payload...")
         val step4Cmd = "./spd_dump exec_addr $noverify fdl spl-unlock.bin $fdl1"
         val res4 = rootExecutor.executeCommand(step4Cmd, binaryManager.binariesDir)
+        if (!res4.isSuccess) {
+            // The unlock payload itself failed to send — do NOT fall through to step 6. Restoring
+            // the original splloader now would silently discard the only evidence of what step 4
+            // actually did to the device, and would report this whole sequence as however step 6
+            // happens to exit rather than as the real failure at step 4.
+            onStepUpdate("Unlock payload failed to send — leaving splloader/uboot as-is for inspection.")
+            return res4
+        }
 
         // Step 5: Read status from miscdata
         onStepUpdate("Verifying unlock status from miscdata...")
         val step5Cmd = "$base verbose 2 read_part miscdata 8192 64 m.bin reset"
-        rootExecutor.executeCommand(step5Cmd, binaryManager.binariesDir)
+        val res5 = rootExecutor.executeCommand(step5Cmd, binaryManager.binariesDir)
+        if (!res5.isSuccess) {
+            onStepUpdate("Could not verify miscdata after unlock — check the console log before continuing.")
+        }
 
         // Step 6: Restore splloader and uboot
         onStepUpdate("Restoring original splloader and uboot...")

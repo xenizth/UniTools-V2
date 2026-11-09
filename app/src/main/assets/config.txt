@@ -7,7 +7,7 @@ O - Enabled
 (no text) - Enabled on default (for ex: [Hi] - )
 
 Section: Flashing
-	[Unlock Bootloader] - X
+	[Unlock Bootloader] - O
 	[Add Partition] - X
 	[Flash Queue] - O
 	[Partition Flashing] - O

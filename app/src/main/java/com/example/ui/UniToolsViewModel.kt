@@ -29,8 +29,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileOutputStream
-import java.net.HttpURLConnection
-import java.net.URL
 
 enum class FilesNavMode {
     BROWSER
@@ -82,25 +80,19 @@ class UniToolsViewModel(application: Application) : AndroidViewModel(application
     private fun loadConfiguration() {
         viewModelScope.launch(Dispatchers.IO) {
             try {
-                // 1. Load bundled config
+                // The bundled config.txt (app/src/main/assets/config.txt) is this fork's own
+                // feature gates and is authoritative. We intentionally do NOT fetch/apply
+                // Classity-Real's upstream UniTools-Configurations repo here anymore: that repo
+                // is outside this fork's control, and it ships with [Unlock Bootloader] - X —
+                // every launch was silently re-disabling the Unlock Bootloader button a few
+                // hundred milliseconds after this screen appeared, overwriting whatever this
+                // fork's own config.txt said, with no indication to the user that anything had
+                // changed. If you want to track an upstream config again, point this at a
+                // config.txt you control instead.
                 val app = getApplication<Application>()
                 val localContent = app.assets.open("config.txt").bufferedReader().use { it.readText() }
                 val localConfig = UniToolsConfig.parseFromText(localContent)
                 _uiState.update { it.copy(config = localConfig) }
-
-                // 2. Fetch latest online if reachable
-                try {
-                    val url = URL("https://raw.githubusercontent.com/Classity-Real/UniTools-Configurations/main/config.txt")
-                    val connection = url.openConnection() as HttpURLConnection
-                    connection.connectTimeout = 3000
-                    connection.readTimeout = 3000
-                    if (connection.responseCode == 200) {
-                        val remoteContent = connection.inputStream.bufferedReader().use { it.readText() }
-                        val remoteConfig = UniToolsConfig.parseFromText(remoteContent)
-                        _uiState.update { it.copy(config = remoteConfig) }
-                    }
-                    connection.disconnect()
-                } catch (ignored: Exception) {}
             } catch (e: Exception) {
                 // Keep default
             }
