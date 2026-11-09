@@ -13,7 +13,7 @@ android {
   compileSdk { version = release(36) { minorApiLevel = 1 } }
 
   defaultConfig {
-    applicationId = "dev.graytvhead.unitool"
+    applicationId = "com.unisoc.spdflasher"
     minSdk = 24
     targetSdk = 36
     versionCode = 1
